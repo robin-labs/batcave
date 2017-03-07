@@ -1,0 +1,22 @@
+{
+  "name": "rhcp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-preset-es2016": "^6.22.0",
+    "babel-preset-react": "^6.23.0",
+    "babelify": "^7.3.0",
+    "browserify-css": "^0.10.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "underscore": "^1.8.3"
+  }
+}
