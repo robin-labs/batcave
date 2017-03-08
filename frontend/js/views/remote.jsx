@@ -153,12 +153,18 @@ const PulseControl = React.createClass({
 			{pulse.type !== Pulse.types.CLICK && <ListItem
 				primaryText="Square"
 				secondaryText="Emit a square wave"
-				rightToggle={<Toggle/>}
+				rightToggle={<Toggle
+					toggled={pulse.isSquare}
+					onToggle={(e, v) => this.handleUpdate({isSquare: v})}
+				/>}
 			/>}
 			{pulse.type === Pulse.types.CHIRP && <ListItem
 				primaryText="Logarithmic"
 				secondaryText="Chirp with a logarithmic freqency sweep"
-				rightToggle={<Toggle/>}
+				rightToggle={<Toggle
+					toggled={pulse.isLogarithmic}
+					onToggle={(e, v) => this.handleUpdate({isLogarithmic: v})}
+				/>}
 			/>}
 			<ListItem
 				primaryText="Windshield wipers"
