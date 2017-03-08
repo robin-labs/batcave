@@ -1,4 +1,5 @@
 {
-    "presets": ["react", "es2016"],
+    "presets": ["react", "latest"],
+    "plugins": ["transform-object-rest-spread"],
     "only": ["js"]
 }

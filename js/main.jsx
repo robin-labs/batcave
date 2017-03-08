@@ -1,15 +1,16 @@
 const React = require("react");
 const {render} = require("react-dom");
-const _ = require("underscore");
+
+const injectTapEventPlugin = require("react-tap-event-plugin");
+injectTapEventPlugin();
+
+const MuiThemeProvider = require("material-ui/styles/MuiThemeProvider").default;
 
 require("browserify-css");
 require("../css/style.css");
 
-class App extends React.Component {
-    render() {
-        return <div> :) </div>;
-    }
-}
+const {RobinApp} = require("./views/app.jsx");
+const {Remote} = require("./remote.js");
 
 var appRoot;
 document.addEventListener("DOMContentLoaded", function() {
@@ -18,7 +19,9 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function doRender() {
-    render(<App/>, appRoot);
-    window.requestAnimationFrame(doRender);
+    render(<MuiThemeProvider>
+		<RobinApp remote={remote}/>
+    </MuiThemeProvider>, appRoot);
 }
 
+const remote = new Remote(doRender);
