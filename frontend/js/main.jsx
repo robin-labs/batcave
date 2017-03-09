@@ -9,19 +9,26 @@ const MuiThemeProvider = require("material-ui/styles/MuiThemeProvider").default;
 require("browserify-css");
 require("../css/style.css");
 
-const {RobinApp} = require("./views/app.jsx");
+const {Backend} = require("./backend.js");
 const {Remote} = require("./remote.js");
+const {ConnectionManager} = require("./connection-manager.js");
+
+const {RobinApp} = require("./views/app.jsx");
 
 var appRoot;
 document.addEventListener("DOMContentLoaded", function() {
     appRoot = document.getElementById("root");
-    doRender();
+    update();
 });
 
-function doRender() {
-    render(<MuiThemeProvider>
-		<RobinApp remote={remote}/>
+function update() {
+	if (appRoot) render(<MuiThemeProvider>
+		<RobinApp remote={remote} connectionManager={connectionManager}/>
     </MuiThemeProvider>, appRoot);
 }
 
-const remote = new Remote(doRender);
+const backend = new Backend();
+const connectionManager = new ConnectionManager(update, backend);
+const remote = new Remote(update, backend);
+
+window.backend = backend;

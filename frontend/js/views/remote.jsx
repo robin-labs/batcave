@@ -29,45 +29,50 @@ const RemoteView = React.createClass({
 	},
 
 	render() {
+		const {remote} = this.props;
 		return <div>
 			<PulseControl {...this.props}/>
-			<DeviceInfo {...this.props}/>
+			{remote.device && <DeviceInfo {...this.props}/>}
 		</div>;
 	},
 });
 
-const DeviceInfo = (props) => <RobinCard>
+const DeviceInfo = ({remote}) => <RobinCard>
 	<List>
 		<Subheader>Device information</Subheader>
 		<ListItem
 			disabled
 			primaryText="Identifier"
-			secondaryText="robin-prototype"
+			secondaryText={remote.device.id}
 		/>
 		<ListItem
 			disabled
 			primaryText="IP address"
-			secondaryText="128.30.99.56"
+			secondaryText={remote.device.ip}
 		/>
 		<ListItem
 			disabled
 			primaryText="Bluetooth connections"
-			secondaryText="Remote and earbuds are connected"
+			secondaryText={remote.device.bluetoothConnections}
 		/>
 		<ListItem
 			disabled
 			primaryText="Last seen"
-			secondaryText={new Date().toString()}
+			secondaryText={remote.device.lastSeen}
 		/>
 		<ListItem
 			disabled
 			primaryText="Device battery"
-			secondaryText="Good"
+			secondaryText={
+				remote.device.deviceBatteryLow ? "Low" : "Okay"
+			}
 		/>
 		<ListItem
 			disabled
 			primaryText="Emitter battery"
-			secondaryText="Low"
+			secondaryText={
+				remote.device.emitterBatteryLow ? "Low" : "Okay"
+			}
 		/>
 		<Subheader>Debugging overrides</Subheader>
 		<ListItem
@@ -102,13 +107,13 @@ const DeviceInfo = (props) => <RobinCard>
 const PulseControl = React.createClass({
 	handleUpdate(updated) {
 		const {remote} = this.props;
-		remote.pulseHistory.insert(remote.pulse.copy(updated));
+		remote.updatePulse(remote.pulse.copy(updated));
 	},
 
 	renderInner() {
 		const {remote} = this.props;
 		const pulse = remote.pulse;
-		return <List>
+		return <List style={{padding: 0}}>
 			<ListItem disabled>
 				<LabeledSlider 
 					name="duration"
@@ -186,29 +191,27 @@ const PulseControl = React.createClass({
 				<Tab value={Pulse.types.CHIRP} label="Chirp"/>
 				<Tab value={Pulse.types.CLICK} label="Click"/>
 			</Tabs>
-			{this.renderInner()}
-			<CardActions 
+			<div 
 				style={{
 					display: "flex",
 					justifyContent: "space-around",
 				}}
 			>
 				<IconButton
-					tooltip="undo"
 					disabled={remote.pulseHistory.atStart()}
 					onTouchTap={() => remote.pulseHistory.undo()}
 				><UndoIcon/>
 				</IconButton>
 				<IconButton 
 					disabled={remote.pulseHistory.atEnd()}
-					tooltip="redo"
 					onTouchTap={() => remote.pulseHistory.redo()}
 				>
 					<RedoIcon/>
 				</IconButton>
-				<IconButton tooltip="load..."><BookmarkIcon/></IconButton>
-				<IconButton tooltip="bookmark"><StarBorderIcon/></IconButton>
-			</CardActions>	
+				<IconButton disabled><BookmarkIcon/></IconButton>
+				<IconButton disabled><StarBorderIcon/></IconButton>
+			</div>	
+			{this.renderInner()}
 		</RobinCard>;
 	}
 });

@@ -12,13 +12,19 @@ const {
 
 const Paper = require("material-ui/Paper").default;
 
+const {ConnectionManager} = require("../connection-manager.js");
 const {Remote} = require("../remote.js");
 const {Device, Pulse} = require("../models.js");
+const {RemoteStatus, DeviceStatus} = require("../protocol.js");
+
 const {RemoteView} = require("./remote.jsx");
+const {ConnectionManagerView} = require("./connection-manager-view.jsx");
 
 const RobinApp = React.createClass({
 	propTypes: {
 		remote: React.PropTypes.instanceOf(Remote).isRequired,
+		connectionManager: React.PropTypes
+			.instanceOf(ConnectionManager).isRequired,
 	},
 
 	getInitialState() {
@@ -40,7 +46,11 @@ const RobinApp = React.createClass({
 	},
 
 	render() {
+		const {connectionManager} = this.props;
 		const {activeTab} = this.state;
+		if (connectionManager.deviceStatus === DeviceStatus.DISCONNECTED) {
+			return <ConnectionManagerView {...this.props}/>
+		}
 		return <div className={css(styles.outer)}>
 			<div className={css(styles.content)}>
 				{this.renderActiveTab()}

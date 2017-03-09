@@ -18,6 +18,14 @@
   "homepage": "https://github.com/idreyn/batcave#readme",
   "dependencies": {
     "express": "^4.15.2",
-    "socket.io": "^1.7.3"
+    "ip": "^1.1.5",
+    "socket.io": "^1.7.3",
+    "socket.io-client": "^1.7.3",
+    "socket.io-wildcard": "^0.1.1",
+    "socketio-wildcard": "^0.3.0"
+  },
+  "devDependencies": {
+    "babel-preset-latest": "^6.22.0",
+    "babel-preset-react": "^6.23.0"
   }
 }

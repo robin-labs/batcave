@@ -1,14 +1,36 @@
 const {Pulse, Device} = require("./models.js");
+const {Message} = require("./protocol.js");
 
 class Remote {
-	constructor(render) {
-		this.update = render;
+	constructor(update, backend) {
+		this.update = update;
+		this.backend = backend;
 		this.device = new Device();
 		this.pulse = Pulse.getDefaultPulse();
+		this.pulseSetByInfo = false;
 		this.pulseHistory = new PulseHistory(this.pulse, (p) => {
 			this.pulse = p;
 			this.update();
 		});
+		backend.on(
+			Message.DEVICE_STATUS,
+			this.handleDeviceStatus.bind(this)
+		);
+	}
+
+	handleDeviceStatus({status, info}) {
+		let {pulse, ...rest} = info;
+		this.device = this.device.copy(rest);
+		if (pulse && !this.pulseSetByInfo) {
+			this.pulse = this.pulse.copy(pulse);
+			this.pulseSetByInfo = true;
+		}
+		this.update();
+	}
+
+	updatePulse(pulse) {
+		this.backend.emit(Message.UPDATE_PULSE, pulse);
+		this.pulseHistory.insert(pulse);
 	}
 }
 

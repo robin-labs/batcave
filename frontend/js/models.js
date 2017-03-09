@@ -1,17 +1,29 @@
 class Model {
 	constructor() {
-		this.__pending = {};
+
 	}
 
 	enumerable(props, override) {
-		props = {...props, ...override};
+		override = override || {};
+		Object.defineProperty(this, "__properties", {
+			enumerable: false, configurable: true, writable: true
+		});
 		this.__properties = [];
 		for (let k in props) {
 			this.__properties.push(k);
 			Object.defineProperty(this, k, {
 				enumerable: true, configurable: true, writable: true
 			});
-			this[k] = props[k];
+			this[k] = override[k] || props[k];
+		}
+		for (let k in override) {
+			if (!this.__properties.includes(k)) {
+				if(k === "__properties") debugger;
+				console.warn(
+					`Did not assign non-enumerable prop ${k}` +
+					` which is only present in override.`
+				);
+			}
 		}
 	}
 
@@ -34,26 +46,19 @@ class Model {
 		}
 		return true;
 	}
-
-	setFallbackValue(key, value) {
-		this.__pending[key] = value;
-	}
-
-	resolveFallbackValue(key, success) {
-		if (!success) {
-			this[key] = this.__pending[key];
-		}
-		delete this.__pending[key];
-	}
 }
 
 class Device extends Model {
 	constructor(obj) {
 		super();
-		this.identifier = "robin";
-		// Battery status
-		this.deviceBatteryLow = false;
-		this.emitterBatteryLow = false;
+		this.enumerable({
+			id: "",
+			ip: "",
+			bluetoothConnections: "",
+			deviceBatteryLow: false,
+			emitterBatteryLow: false,
+			lastSeen: "",
+		}, obj);
 	}
 }
 

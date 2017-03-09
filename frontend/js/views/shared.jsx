@@ -22,7 +22,10 @@ const LabeledSlider = React.createClass({
 
 	handleDragStart(e) {
 		const {onDragStart} = this.props;
-		this.setState({dragging: true});
+		this.setState({
+			dragging: true,
+			dragValue: this.props.value,
+		});
 		onDragStart && onDragStart(e);
 	},
 
