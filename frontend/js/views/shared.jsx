@@ -2,6 +2,8 @@ const React = require("react");
 const {StyleSheet, css} = require("aphrodite");
 
 const Slider = require("material-ui/Slider").default;
+const Dialog = require("material-ui/Dialog").default;
+const FlatButton = require("material-ui/FlatButton").default;
 const {Card} = require("material-ui/Card");
 
 const LabeledSlider = React.createClass({
@@ -62,10 +64,42 @@ const LabeledSlider = React.createClass({
 	}
 });
 
+const ConfirmDialog = React.createClass({
+	propTypes: {
+		title: React.PropTypes.string.isRequired,
+		text: React.PropTypes.string.isRequired,
+		onCancel: React.PropTypes.func.isRequired,
+		onConfirm: React.PropTypes.func.isRequired,
+		open: React.PropTypes.bool.isRequired,
+	},
+
+	render() {
+		const {title, text, onCancel, onConfirm, open} = this.props;
+		return <Dialog
+			title={title}
+			modal={true}
+			open={open}
+			actions={[
+				<FlatButton
+					label="No"
+					primary={true}
+					onTouchTap={onCancel}
+					keyboardFocused={true}
+				/>,
+				<FlatButton
+					label="Yes"
+					primary={true}
+					onTouchTap={onConfirm}
+				/>
+			]}
+		>{text}</Dialog>;
+	},
+});
+
 const RobinCard = React.createClass({
 	render() {
 		return <Card style={{marginTop: 10}} {...this.props}/>;
 	}
 });
 
-module.exports = {LabeledSlider, RobinCard};
+module.exports = {LabeledSlider, RobinCard, ConfirmDialog};

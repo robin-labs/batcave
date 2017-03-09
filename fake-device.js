@@ -5,6 +5,7 @@ const ip = require("ip");
 const {Message, DeviceStatus} = require("./frontend/js/protocol.js");
 
 var pulse = null;
+var overrides = null;
 
 const DEVICE_INFO = {
 	id: "robin-prototype-fake",
@@ -38,11 +39,17 @@ socket.on(Message.DEVICE_NEW_REMOTE, () => {
 
 socket.on(Message.DISCONNECT, () => {
 	console.log("I am disconnected");
+	overrides = null;
 });
 
 socket.on(Message.UPDATE_PULSE, (p) => {
 	console.log("Setting pulse to ", p);
 	pulse = p;
+});
+
+socket.on(Message.UPDATE_OVERRIDES, (o) => {
+	console.log("Setting overrides to ", o);
+	overrides = o;
 });
 
 setInterval(emitStatus, 5000);

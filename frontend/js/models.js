@@ -18,7 +18,6 @@ class Model {
 		}
 		for (let k in override) {
 			if (!this.__properties.includes(k)) {
-				if(k === "__properties") debugger;
 				console.warn(
 					`Did not assign non-enumerable prop ${k}` +
 					` which is only present in override.`
@@ -90,6 +89,17 @@ Pulse.types = {
 	CLICK: "click",
 };
 
-window.Pulse = Pulse;
+class Overrides extends Model {
+	constructor(obj) {
+		super();
+		this.enumerable({
+			wipersEnabled: false,
+			sWipersPeriod: 1, 
+			forceEnableEmitters: false,
+			disableSave: false,
+			disablePlayback: false
+		}, obj);
+	}
+}
 
-module.exports = {Device, Pulse};
+module.exports = {Device, Pulse, Overrides};

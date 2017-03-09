@@ -29,6 +29,7 @@ const Message = {
 	DEVICE_STATUS: "device-status",
 	DEVICE_NEW_REMOTE: "device-new-remote",
 	UPDATE_PULSE: "update-pulse",
+	UPDATE_OVERRIDES: "update-overrides",
 };
 
 module.exports = {DeviceStatus, RemoteStatus, Message};

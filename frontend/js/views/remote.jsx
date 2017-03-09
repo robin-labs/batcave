@@ -21,7 +21,7 @@ const BookmarkIcon = require("material-ui/svg-icons/action/bookmark.js").default
 const {Remote} = require("../remote.js");
 const {Pulse} = require("../models.js");
 
-const {LabeledSlider, RobinCard} = require("./shared.jsx");
+const {LabeledSlider, RobinCard, ConfirmDialog} = require("./shared.jsx");
 
 const RemoteView = React.createClass({
 	propTypes: {
@@ -37,72 +37,132 @@ const RemoteView = React.createClass({
 	},
 });
 
-const DeviceInfo = ({remote}) => <RobinCard>
-	<List>
-		<Subheader>Device information</Subheader>
-		<ListItem
-			disabled
-			primaryText="Identifier"
-			secondaryText={remote.device.id}
-		/>
-		<ListItem
-			disabled
-			primaryText="IP address"
-			secondaryText={remote.device.ip}
-		/>
-		<ListItem
-			disabled
-			primaryText="Bluetooth connections"
-			secondaryText={remote.device.bluetoothConnections}
-		/>
-		<ListItem
-			disabled
-			primaryText="Last seen"
-			secondaryText={remote.device.lastSeen}
-		/>
-		<ListItem
-			disabled
-			primaryText="Device battery"
-			secondaryText={
-				remote.device.deviceBatteryLow ? "Low" : "Okay"
-			}
-		/>
-		<ListItem
-			disabled
-			primaryText="Emitter battery"
-			secondaryText={
-				remote.device.emitterBatteryLow ? "Low" : "Okay"
-			}
-		/>
-		<Subheader>Debugging overrides</Subheader>
-		<ListItem
-			primaryText="Force-enable emitters"
-			secondaryText="Useful for debugging the analog hardware"
-			rightToggle={<Toggle/>}
-		/>
-		<ListItem
-			primaryText="Disable device playback"
-			secondaryText="Turns off playback through headphone jack"
-			rightToggle={<Toggle/>}
-		/>
-		<ListItem
-			primaryText="Disable save"
-			secondaryText="Won't save audio recordings or photos"
-			rightToggle={<Toggle/>}
-		/>
-		<Subheader>Here be dragons</Subheader>
-		<ListItem
-			primaryText="Restart the device server"
-			secondaryText="You'll lose connection for a few seconds, at least"
-			rightIcon={<RestartIcon/>}
-		/>
-		<ListItem
-			primaryText="Restart the device"
-			secondaryText="All bets are off"
-			rightIcon={<PowerIcon/>}
-		/>
-	</List>
-</RobinCard>;
+const DeviceInfo = React.createClass({
+	getInitialState() {
+		return {
+			confirmingRestart: false,
+			confirmingReboot: false,
+		};
+	},
+
+	render() {
+		const {remote} = this.props;
+		const {confirmingRestart, confirmingReboot} = this.state;
+		return <RobinCard>
+			<List>
+				<Subheader>Device information</Subheader>
+				<ListItem
+					disabled
+					primaryText="Identifier"
+					secondaryText={remote.device.id}
+				/>
+				<ListItem
+					disabled
+					primaryText="IP address"
+					secondaryText={remote.device.ip}
+				/>
+				<ListItem
+					disabled
+					primaryText="Bluetooth connections"
+					secondaryText={remote.device.bluetoothConnections}
+				/>
+				<ListItem
+					disabled
+					primaryText="Last seen"
+					secondaryText={remote.device.lastSeen}
+				/>
+				<ListItem
+					disabled
+					primaryText="Device battery"
+					secondaryText={
+						remote.device.deviceBatteryLow ? "Low" : "Okay"
+					}
+				/>
+				<ListItem
+					disabled
+					primaryText="Emitter battery"
+					secondaryText={
+						remote.device.emitterBatteryLow ? "Low" : "Okay"
+					}
+				/>
+				<Subheader>Debugging overrides</Subheader>
+				<ListItem
+					primaryText="Force-enable emitters"
+					secondaryText="Useful for debugging the analog hardware"
+					rightToggle={<Toggle
+						toggled={remote.overrides.forceEnableEmitters}
+						onToggle={
+							(e, forceEnableEmitters) => remote.updateOverrides({
+								forceEnableEmitters
+							})
+						}
+					/>}
+				/>
+				<ListItem
+					primaryText="Disable device playback"
+					secondaryText="Turns off playback through headphone jack"
+					rightToggle={<Toggle
+						toggled={remote.overrides.disablePlayback}
+						onToggle={
+							(e, disablePlayback) => remote.updateOverrides({
+								disablePlayback
+							})
+						}
+					/>}
+				/>
+				<ListItem
+					primaryText="Disable save"
+					secondaryText="Won't save audio recordings or photos"
+					rightToggle={<Toggle
+						toggled={remote.overrides.disableSave}
+						onToggle={
+							(e, disableSave) => remote.updateOverrides({
+								disableSave
+							})
+						}
+					/>}
+				/>
+				<Subheader>Here be dragons</Subheader>
+				<ListItem
+					primaryText="Restart the device server"
+					secondaryText={"You'll lose connection" +
+					 " for at least a few seconds."
+					}
+					rightIcon={<RestartIcon/>}
+					onTouchTap={() => this.setState({
+						confirmingRestart: true,
+					})}
+				/>
+				<ListItem
+					primaryText="Restart the device"
+					secondaryText="All bets are off"
+					rightIcon={<PowerIcon/>}
+					onTouchTap={() => this.setState({
+						confirmingReboot: true,
+					})}
+				/>
+			</List>
+			<ConfirmDialog
+				title="Really restart the server?"
+				text="This will take a few seconds."
+				open={confirmingRestart}
+				onConfirm={() => {
+					this.setState({confirmingRestart: false});
+				}}
+				onCancel={() => this.setState({confirmingRestart: false})}
+			/>
+			<ConfirmDialog
+				title="Really restart the device?"
+				text="This will probably be annoying."
+				open={confirmingReboot}
+				onConfirm={() => {
+					this.setState({confirmingReboot: false});
+				}}
+				onCancel={() => this.setState({confirmingReboot: false})}
+			/>
+		</RobinCard>;
+	},
+});
 
 const PulseControl = React.createClass({
 	handleUpdate(updated) {
@@ -174,8 +234,30 @@ const PulseControl = React.createClass({
 			<ListItem
 				primaryText="Windshield wipers"
 				secondaryText="Emit a pulse on a specified interval"
-				rightToggle={<Toggle/>}
+				rightToggle={<Toggle
+					toggled={remote.overrides.wipersEnabled}
+					onToggle={
+						(e, wipersEnabled) => remote.updateOverrides({
+							wipersEnabled,
+						})
+					}
+				/>}
 			/>
+			{remote.overrides.wipersEnabled && <ListItem disabled>
+				<LabeledSlider 
+					name="wiper-period"
+					getLabel={(n) => 
+						<span><b>Wiper period:</b> {n}s</span>
+					}
+					onUpdate={(v) => remote.updateOverrides({
+						sWipersPeriod: v
+					})}
+					min={0.1}
+					max={10}
+					step={0.1}
+					value={remote.overrides.sWipersPeriod}
+				/>
+			</ListItem>}
 		</List>;
 	},
 

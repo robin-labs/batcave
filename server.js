@@ -65,7 +65,6 @@ const remoteSocket = (socket) => {
 					status: DeviceStatus.DISCONNECTED,
 				});
 			});
-			console.log("listening for DEVICE_STATUS...");
 			device.socket.on("*",
 				({data: [message, ...args]}) => {
 					console.log("device emitted message", message, args);

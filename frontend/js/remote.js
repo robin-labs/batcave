@@ -1,4 +1,4 @@
-const {Pulse, Device} = require("./models.js");
+const {Pulse, Device, Overrides} = require("./models.js");
 const {Message} = require("./protocol.js");
 
 class Remote {
@@ -8,6 +8,7 @@ class Remote {
 		this.device = new Device();
 		this.pulse = Pulse.getDefaultPulse();
 		this.pulseSetByInfo = false;
+		this.overrides = new Overrides();
 		this.pulseHistory = new PulseHistory(this.pulse, (p) => {
 			this.pulse = p;
 			this.update();
@@ -19,6 +20,7 @@ class Remote {
 	}
 
 	handleDeviceStatus({status, info}) {
+		if (!info) return;
 		let {pulse, ...rest} = info;
 		this.device = this.device.copy(rest);
 		if (pulse && !this.pulseSetByInfo) {
@@ -31,6 +33,12 @@ class Remote {
 	updatePulse(pulse) {
 		this.backend.emit(Message.UPDATE_PULSE, pulse);
 		this.pulseHistory.insert(pulse);
+	}
+
+	updateOverrides(obj) {
+		this.overrides = this.overrides.copy(obj);
+		this.backend.emit(Message.UPDATE_OVERRIDES, this.overrides);
+		this.update();
 	}
 }
 
