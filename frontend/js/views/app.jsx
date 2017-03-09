@@ -81,6 +81,8 @@ const RobinApp = React.createClass({
 
 const styles = StyleSheet.create({
 	content: {
+		display: "flex",
+		flexDirection: "column",
 		flex: 1,
 		overflowY: "scroll",
 		margin: "0 auto",
