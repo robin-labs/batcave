@@ -102,4 +102,23 @@ const RobinCard = React.createClass({
 	}
 });
 
-module.exports = {LabeledSlider, RobinCard, ConfirmDialog};
+const ShrugView = React.createClass({
+	render() {
+		return <div
+			style={{
+				display: "flex",
+				alignItems: "center",
+				justifyContent: "center",
+				flexDirection: "column",
+				height: "100%",
+			}}
+		>
+			<div style={{fontSize: 30}}>
+				{"¯\\_(ツ)_/¯"}
+			</div>
+			<div>Not implemented yet</div>
+		</div>
+	},
+});
+
+module.exports = {LabeledSlider, RobinCard, ConfirmDialog, ShrugView};

@@ -17,6 +17,7 @@ const {Remote} = require("../remote.js");
 const {Device, Pulse} = require("../models.js");
 const {RemoteStatus, DeviceStatus} = require("../protocol.js");
 
+const {ShrugView} = require("./shared.jsx");
 const {RemoteView} = require("./remote.jsx");
 const {ConnectionManagerView} = require("./connection-manager-view.jsx");
 
@@ -42,7 +43,7 @@ const RobinApp = React.createClass({
 		if (activeTab === 0) {
 			return <RemoteView remote={this.props.remote}/>;
 		}
-		return null;
+		return <ShrugView/>;
 	},
 
 	render() {

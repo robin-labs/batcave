@@ -177,7 +177,7 @@ const PulseControl = React.createClass({
 			<ListItem disabled>
 				<LabeledSlider 
 					name="duration"
-					getLabel={(n) => <span><b>Duration:</b> {n}ms</span>}
+					getLabel={(n) => <span>Duration: {n}ms</span>}
 					onUpdate={(v) => this.handleUpdate({usDuration: 1000 * v})}
 					min={1}
 					max={20}
@@ -189,11 +189,11 @@ const PulseControl = React.createClass({
 				<LabeledSlider 
 					name="start-freq"
 					getLabel={(n) => 
-						<span><b>{
+						<span>{
 							pulse.type === Pulse.types.CHIRP ?
 								"Starting frequency" :
 								"Frequency"
-						}:</b> {n}kHz</span>
+						}: {n}kHz</span>
 					}
 					onUpdate={(v) => this.handleUpdate({khzStart: v})}
 					min={10}
@@ -206,7 +206,7 @@ const PulseControl = React.createClass({
 				<LabeledSlider 
 					name="end-freq"
 					getLabel={(n) => 
-						<span><b>Ending frequency:</b> {n}kHz</span>
+						<span>Ending frequency: {n}kHz</span>
 					}
 					onUpdate={(v) => this.handleUpdate({khzEnd: v})}
 					min={10}
@@ -247,7 +247,7 @@ const PulseControl = React.createClass({
 				<LabeledSlider 
 					name="wiper-period"
 					getLabel={(n) => 
-						<span><b>Wiper period:</b> {n}s</span>
+						<span>Wiper period: {n}s</span>
 					}
 					onUpdate={(v) => remote.updateOverrides({
 						sWipersPeriod: v
