@@ -77,7 +77,10 @@ const remoteSocket = (socket) => {
 					device && device.socket.emit(message, ...args);
 				}
 			);
-			device.socket.emit(Message.DEVICE_NEW_REMOTE);
+			socket.on(Message.DISCONNECT, () => {
+				device && device.socket.emit(Message.DEVICE_REMOTE_DISCONNECT);
+			});
+			device.socket.emit(Message.DEVICE_REMOTE_CONNECT);
 			socket.emit(Message.DEVICE_CHOICE_SUCCESSFUL, idChoice);
 		}
 	});

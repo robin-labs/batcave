@@ -3,6 +3,7 @@ const {StyleSheet, css} = require("aphrodite");
 
 const FlatButton = require("material-ui/FlatButton").default;
 const IconButton = require("material-ui/IconButton").default;
+const FAB = require("material-ui/FloatingActionButton").default;
 const Paper = require("material-ui/Paper").default;
 const Toggle = require("material-ui/Toggle").default;
 const Subheader = require("material-ui/Subheader").default;
@@ -10,6 +11,7 @@ const {List, ListItem} = require("material-ui/List");
 const {Tab, Tabs} = require("material-ui/Tabs");
 const {Card, CardActions, CardHeader, CardText} = require("material-ui/Card");
 
+const PlayIcon = require("material-ui/svg-icons/av/play-arrow.js").default;
 const RestartIcon = require("material-ui/svg-icons/navigation/refresh.js").default;
 const PowerIcon = require("material-ui/svg-icons/action/power-settings-new.js").default;
 const UndoIcon = require("material-ui/svg-icons/content/undo.js").default;
@@ -33,6 +35,18 @@ const RemoteView = React.createClass({
 		return <div>
 			<PulseControl {...this.props}/>
 			{remote.device && <DeviceInfo {...this.props}/>}
+			<FAB
+				onTouchTap={() => remote.triggerPulse()}
+				secondary
+				style={{
+					position: "fixed",
+					bottom: 75,
+					right: 20,
+					zIndex: 1,
+				}}
+			>
+				<PlayIcon/>
+			</FAB>
 		</div>;
 	},
 });

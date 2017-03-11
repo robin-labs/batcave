@@ -30,6 +30,11 @@ class Remote {
 		this.update();
 	}
 
+	triggerPulse() {
+		console.log("triggerPulse");
+		this.backend.emit(Message.TRIGGER_PULSE);
+	}
+
 	updatePulse(pulse) {
 		this.backend.emit(Message.UPDATE_PULSE, pulse);
 		this.pulseHistory.insert(pulse);
