@@ -30,9 +30,13 @@ const Message = {
 	DEVICE_REMOTE_CONNECT: "device-remote-connect",
 	DEVICE_REMOTE_DISCONNECT: "device-remote-disconnect",
 	UPDATE_PULSE: "update-pulse",
+	SET_RECORD_DURATION: "set-record-duration",
 	TRIGGER_PULSE: "trigger-pulse",
 	UPDATE_OVERRIDES: "update-overrides",
 	RESTART_DEVICE: "restart-device",
+	AUDIO: "audio",
+	ASSIGN_PULSE: "assign-pulse",
+	UPDATE_LABEL: "update-label",
 };
 
 module.exports = {DeviceStatus, RemoteStatus, Message};

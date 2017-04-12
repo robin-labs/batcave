@@ -24,6 +24,7 @@
   "dependencies": {
     "aphrodite": "^1.1.0",
     "classnames": "^2.2.5",
+    "debounce": "^1.0.0",
     "material-ui": "^0.17.0",
     "react-tap-event-plugin": "^2.0.1",
     "react-toolbox": "^2.0.0-beta.6"

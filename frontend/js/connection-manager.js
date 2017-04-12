@@ -1,4 +1,6 @@
 const {RemoteStatus, DeviceStatus, Message} = require("./protocol.js");
+const resampler = require('audio-resampler');
+
 
 class ConnectionManager {
 	constructor(update, backend) {
@@ -26,6 +28,10 @@ class ConnectionManager {
 			backend.on(
 				Message.DEVICE_CHOICE_SUCCESSFUL,
 				(id) => console.info(`${id} is was chosen successfully.`)
+			);
+			backend.on(
+				Message.AUDIO,
+				this.onReceiveAudio.bind(this),
 			);
 			backend.emit(Message.HANDSHAKE_REMOTE);
 		}
@@ -55,6 +61,17 @@ class ConnectionManager {
 			this.remoteStatus = RemoteStatus.DISCONNECTED;
 		}
 		this.update();
+	}
+
+	onReceiveAudio({audio, pulse}) {
+		/*
+		resampler("data:audio/x-wav;base64," + audio, 9600, ({getFile}) => {
+			getFile((f) => {
+				var a = new Audio(f);
+				a.play();
+			});
+		});
+		*/
 	}
 }
 

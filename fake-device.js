@@ -52,4 +52,8 @@ socket.on(Message.UPDATE_OVERRIDES, (o) => {
 	overrides = o;
 });
 
+socket.on(Message.ASSIGN_PULSE, ({button, pulse}) => {
+	console.log("Assigning pulse", button, pulse);
+})
+
 setInterval(emitStatus, 5000);

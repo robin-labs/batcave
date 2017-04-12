@@ -1,3 +1,5 @@
+const debounce = require("debounce");
+
 const React = require("react");
 const {StyleSheet, css} = require("aphrodite");
 
@@ -10,15 +12,18 @@ const Subheader = require("material-ui/Subheader").default;
 const {List, ListItem} = require("material-ui/List");
 const {Tab, Tabs} = require("material-ui/Tabs");
 const {Card, CardActions, CardHeader, CardText} = require("material-ui/Card");
+const IconMenu = require("material-ui/IconMenu").default;
+const MenuItem = require("material-ui/MenuItem").default;
+const TextField = require("material-ui/TextField").default;
 
 const PlayIcon = require("material-ui/svg-icons/av/play-arrow.js").default;
 const RestartIcon = require("material-ui/svg-icons/navigation/refresh.js").default;
 const PowerIcon = require("material-ui/svg-icons/action/power-settings-new.js").default;
 const UndoIcon = require("material-ui/svg-icons/content/undo.js").default;
 const RedoIcon = require("material-ui/svg-icons/content/redo.js").default;
-const StarIcon = require("material-ui/svg-icons/toggle/star.js").default;
-const StarBorderIcon = require("material-ui/svg-icons/toggle/star-border.js").default;
-const BookmarkIcon = require("material-ui/svg-icons/action/bookmark.js").default;
+const GamepadIcon = require("material-ui/svg-icons/hardware/gamepad.js").default;
+const LabelIcon = require("material-ui/svg-icons/action/label.js").default;
+const LabelIconOutline = require("material-ui/svg-icons/action/label-outline.js").default;
 
 const {Remote} = require("../remote.js");
 const {Pulse} = require("../models.js");
@@ -36,7 +41,7 @@ const RemoteView = React.createClass({
 			<PulseControl {...this.props}/>
 			{remote.device && <DeviceInfo {...this.props}/>}
 			<FAB
-				onTouchTap={() => remote.triggerPulse()}
+				onTouchTap={debounce(remote.triggerPulse.bind(remote), 1000)}
 				secondary
 				style={{
 					position: "fixed",
@@ -179,27 +184,66 @@ const DeviceInfo = React.createClass({
 });
 
 const PulseControl = React.createClass({
-	handleUpdate(updated) {
+	getInitialState() {
+		return {
+			editingLabelText: null,
+			showLabelField: false,
+			labelText: "",
+		}
+	},
+
+	handlePulseUpdate(updated) {
 		const {remote} = this.props;
 		remote.updatePulse(remote.pulse.copy(updated));
 	},
 
+	handleToggleLabelField() {
+		const {remote} = this.props;
+		let {showLabelField, labelText} = this.state;
+		remote.updateLabel(showLabelField ? "" : labelText);
+		this.setState({showLabelField: !showLabelField});
+	},
+
+	handleLabelFocus(e) {
+		this.setState({editingLabelText: this.state.labelText});
+	},
+
+	handleLabelChange(e) {
+		this.setState({
+			editingLabelText: e.target.value
+				.split(" ")
+				.map((bit) => bit
+					.split("")
+					.filter((char) => /^[A-Za-z0-9\-]/.test(char))
+					.join(""))
+				.join("-")
+		});
+	},
+
+	handleLabelBlur(e) {
+		const {remote} = this.props;
+		const labelText = e.target.value;
+		remote.updateLabel(labelText);
+		this.setState({labelText, editingLabelText: null});
+	},
+
 	renderInner() {
 		const {remote} = this.props;
+		const {showLabelField, editingLabelText, labelText} = this.state;
 		const pulse = remote.pulse;
 		return <List style={{padding: 0}}>
 			<ListItem disabled>
 				<LabeledSlider 
 					name="duration"
-					getLabel={(n) => <span>Duration: {n}ms</span>}
-					onUpdate={(v) => this.handleUpdate({usDuration: 1000 * v})}
-					min={1}
-					max={20}
-					step={1}
-					value={pulse.usDuration / 1000}
+					getLabel={(n) => <span>Duration: {Math.round(n / 1000)}ms</span>}
+					onUpdate={(v) => this.handlePulseUpdate({usDuration: v})}
+					min={1e3}
+					max={2e4}
+					step={500}
+					value={pulse.usDuration}
 				/>
 			</ListItem>
-			{pulse.type !== Pulse.types.CLICK && <ListItem disabled>
+			{pulse.type !== Pulse.types.NOISE && <ListItem disabled>
 				<LabeledSlider 
 					name="start-freq"
 					getLabel={(n) => 
@@ -209,7 +253,7 @@ const PulseControl = React.createClass({
 								"Frequency"
 						}: {n}kHz</span>
 					}
-					onUpdate={(v) => this.handleUpdate({khzStart: v})}
+					onUpdate={(v) => this.handlePulseUpdate({khzStart: v})}
 					min={10}
 					max={90}
 					step={5}
@@ -222,19 +266,32 @@ const PulseControl = React.createClass({
 					getLabel={(n) => 
 						<span>Ending frequency: {n}kHz</span>
 					}
-					onUpdate={(v) => this.handleUpdate({khzEnd: v})}
+					onUpdate={(v) => this.handlePulseUpdate({khzEnd: v})}
 					min={10}
 					max={90}
 					step={5}
 					value={pulse.khzEnd}
 				/>
 			</ListItem>}
-			{pulse.type !== Pulse.types.CLICK && <ListItem
+			<ListItem disabled>
+				<LabeledSlider 
+					name="record-duration"
+					getLabel={(n) => 
+						<span>Recording duration: {n}ms</span>
+					}
+					onUpdate={(d) => remote.updateRecordDuration(d)}
+					min={20}
+					max={200}
+					step={5}
+					value={remote.msRecordDuration}
+				/>
+			</ListItem>
+			{pulse.type !== Pulse.types.NOISE && <ListItem
 				primaryText="Square"
 				secondaryText="Emit a square wave"
 				rightToggle={<Toggle
 					toggled={pulse.isSquare}
-					onToggle={(e, v) => this.handleUpdate({isSquare: v})}
+					onToggle={(e, v) => this.handlePulseUpdate({isSquare: v})}
 				/>}
 			/>}
 			{pulse.type === Pulse.types.CHIRP && <ListItem
@@ -242,12 +299,12 @@ const PulseControl = React.createClass({
 				secondaryText="Chirp with a logarithmic freqency sweep"
 				rightToggle={<Toggle
 					toggled={pulse.isLogarithmic}
-					onToggle={(e, v) => this.handleUpdate({isLogarithmic: v})}
+					onToggle={(e, v) => this.handlePulseUpdate({isLogarithmic: v})}
 				/>}
 			/>}
 			<ListItem
-				primaryText="Windshield wipers"
-				secondaryText="Emit a pulse on a specified interval"
+				primaryText="Noise reduction"
+				secondaryText="Sample and reduce background noise"
 				rightToggle={<Toggle
 					toggled={remote.overrides.wipersEnabled}
 					onToggle={
@@ -257,19 +314,14 @@ const PulseControl = React.createClass({
 					}
 				/>}
 			/>
-			{remote.overrides.wipersEnabled && <ListItem disabled>
-				<LabeledSlider 
-					name="wiper-period"
-					getLabel={(n) => 
-						<span>Wiper period: {n}s</span>
-					}
-					onUpdate={(v) => remote.updateOverrides({
-						sWipersPeriod: v
-					})}
-					min={0.1}
-					max={10}
-					step={0.1}
-					value={remote.overrides.sWipersPeriod}
+			{showLabelField && <ListItem style={{paddingTop: 0}}>
+				<TextField
+					style={{padding: 0, margin: 0, width: "100%"}}
+					hintText="Label for .wav files"
+					onFocus={this.handleLabelFocus}
+					onChange={this.handleLabelChange}
+					onBlur={this.handleLabelBlur}
+					value={editingLabelText || labelText}
 				/>
 			</ListItem>}
 		</List>;
@@ -277,15 +329,16 @@ const PulseControl = React.createClass({
 
 	render() {
 		const {remote} = this.props;
+		const {showLabelField} = this.state;
 		const pulse = remote.pulse;
 		return <RobinCard>
 			<Tabs 
 				value={pulse.type}
-				onChange={(v) => this.handleUpdate({type: v})}
+				onChange={(v) => this.handlePulseUpdate({type: v})}
 			>
 				<Tab value={Pulse.types.TONE} label="Tone"/>
 				<Tab value={Pulse.types.CHIRP} label="Chirp"/>
-				<Tab value={Pulse.types.CLICK} label="Click"/>
+				<Tab value={Pulse.types.NOISE} label="Noise"/>
 			</Tabs>
 			<div 
 				style={{
@@ -304,8 +357,26 @@ const PulseControl = React.createClass({
 				>
 					<RedoIcon/>
 				</IconButton>
-				<IconButton disabled><BookmarkIcon/></IconButton>
-				<IconButton disabled><StarBorderIcon/></IconButton>
+				<IconMenu
+					iconButtonElement={<IconButton>
+						<GamepadIcon/>
+					</IconButton>}
+				>
+					<Subheader>Assign this pulse to a button</Subheader>
+					{Object.keys(remote.physicalButtons).map(
+						(k) => <MenuItem
+							key={k}
+							onTouchTap={() => remote.assignPulseToButton(
+								k, remote.pulse
+							)}
+						>
+							{remote.physicalButtons[k]}
+						</MenuItem>
+					)}
+				</IconMenu>
+				<IconButton onTouchTap={this.handleToggleLabelField}>
+					{showLabelField ? <LabelIcon/> : <LabelIconOutline/>}
+				</IconButton>
 			</div>	
 			{this.renderInner()}
 		</RobinCard>;

@@ -1,6 +1,16 @@
 const {Pulse, Device, Overrides} = require("./models.js");
 const {Message} = require("./protocol.js");
 
+const PHYSICAL_BUTTONS = {
+	JS_LEFT: "Joystick left",
+	JS_RIGHT: "Joystick right",
+	JS_DOWN: "Joystick down",
+	LEFT: "Left",
+	RIGHT: "Right",
+	UP: "Up",
+	DOWN: "Down",
+};
+
 class Remote {
 	constructor(update, backend) {
 		this.update = update;
@@ -9,6 +19,8 @@ class Remote {
 		this.pulse = Pulse.getDefaultPulse();
 		this.pulseSetByInfo = false;
 		this.overrides = new Overrides();
+		this.msRecordDuration = 100;
+		this.physicalButtons = PHYSICAL_BUTTONS;
 		this.pulseHistory = new PulseHistory(this.pulse, (p) => {
 			this.pulse = p;
 			this.update();
@@ -31,7 +43,6 @@ class Remote {
 	}
 
 	triggerPulse() {
-		console.log("triggerPulse");
 		this.backend.emit(Message.TRIGGER_PULSE);
 	}
 
@@ -40,10 +51,25 @@ class Remote {
 		this.pulseHistory.insert(pulse);
 	}
 
+	updateRecordDuration(d) {
+		this.msRecordDuration = d;
+		this.backend.emit(Message.SET_RECORD_DURATION, d);
+		this.update();
+	}
+
 	updateOverrides(obj) {
 		this.overrides = this.overrides.copy(obj);
 		this.backend.emit(Message.UPDATE_OVERRIDES, this.overrides);
 		this.update();
+	}
+
+	updateLabel(label) {
+		this.backend.emit(Message.UPDATE_LABEL, label);
+		this.update();
+	}
+
+	assignPulseToButton(button, pulse) {
+		this.backend.emit(Message.ASSIGN_PULSE, {button, pulse});
 	}
 }
 

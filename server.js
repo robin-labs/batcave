@@ -34,7 +34,7 @@ const deviceSocket = (socket, info) => {
 	devices.add(dev);
 
 	console.log("new device", dev.id);
-
+	
 	socket.on(Message.DISCONNECT, (e) => {
 		devices.delete(dev);
 	});	

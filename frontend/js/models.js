@@ -87,6 +87,7 @@ Pulse.types = {
 	TONE: "tone",
 	CHIRP: "chirp",
 	CLICK: "click",
+	NOISE: "noise",
 };
 
 class Overrides extends Model {
