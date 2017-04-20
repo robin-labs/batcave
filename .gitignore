@@ -16,9 +16,9 @@ Thumbs.db
 *.idea
 
 # Build scripts
-zzz-build
-zzz-watch-build
-zzz-serve
+# zzz-build
+# zzz-watch-build
+# zzz-serve
 
 # Built js
 bundle.js
