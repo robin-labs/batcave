@@ -17,18 +17,8 @@ const RemoteStatus = {
 	DISCONNECTED: "disconnected",
 };
 
-const Message = {
-	CONNECT: "connect",
-	DISCONNECT: "disconnect",
-	HANDSHAKE_REMOTE: "handshake-remote",
-	HANDSHAKE_DEVICE: "handshake-device",
-	DEVICE_LISTING: "device-listing",
-	CHOOSE_DEVICE: "choose-device",
-	DEVICE_CHOICE_INVALID: "device-choice-invalid",
-	DEVICE_CHOICE_SUCCESSFUL: "device-choice-successful",
+const DirectMessage = {
 	DEVICE_STATUS: "device-status",
-	DEVICE_REMOTE_CONNECT: "device-remote-connect",
-	DEVICE_REMOTE_DISCONNECT: "device-remote-disconnect",
 	UPDATE_PULSE: "update-pulse",
 	SET_RECORD_DURATION: "set-record-duration",
 	TRIGGER_PULSE: "trigger-pulse",
@@ -37,6 +27,20 @@ const Message = {
 	AUDIO: "audio",
 	ASSIGN_PULSE: "assign-pulse",
 	UPDATE_LABEL: "update-label",
-};
+	HANDSHAKE_REMOTE: "handshake-remote",
+	HANDSHAKE_DEVICE: "handshake-device",
+}
 
-module.exports = {DeviceStatus, RemoteStatus, Message};
+const ServerMessage = {
+	CONNECT: "connect",
+	DISCONNECT: "disconnect",
+	DEVICE_LISTING: "device-listing",
+	CHOOSE_DEVICE: "choose-device",
+	DEVICE_REMOTE_CONNECT: "device-remote-connect",
+	DEVICE_REMOTE_DISCONNECT: "device-remote-disconnect",
+	DEVICE_CHOICE_SUCCESSFUL: "device-choice-successful",
+}
+
+const Message = { ...DirectMessage, ...ServerMessage };
+
+module.exports = { DeviceStatus, RemoteStatus, DirectMessage, ServerMessage, Message };

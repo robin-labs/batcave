@@ -1,11 +1,11 @@
 const React = require("react");
-const {StyleSheet, css} = require("aphrodite");
+const { StyleSheet, css } = require("aphrodite");
 
 const SvgIcon = require("material-ui/SvgIcon").default;
 const ErrorIcon = require("material-ui/svg-icons/alert/error.js").default;
 
-const {ConnectionManager} = require("../connection-manager.js");
-const {RemoteStatus} = require("../protocol.js");
+const { ConnectionManager } = require("../connection-manager.js");
+const { RemoteStatus } = require("../../protocol.js");
 
 const ConnectionManagerView = React.createClass({
 	propTypes: {
@@ -14,22 +14,22 @@ const ConnectionManagerView = React.createClass({
 	},
 
 	renderIcon() {
-		const {connectionManager} = this.props;
+		const { connectionManager } = this.props;
 		switch (connectionManager.remoteStatus) {
 			case RemoteStatus.DISCONNECTED:
-				return <img 
+				return <img
 					className={css(styles.largeIcon, styles.ringing)}
 					src="img/bat.svg"
 				/>;
 			case RemoteStatus.NO_SOCKET:
-				return <ErrorIcon className={css(styles.largeIcon)}/>;
+				return <ErrorIcon className={css(styles.largeIcon)} />;
 			default:
 				return null;
 		}
 	},
 
 	render() {
-		const {connectionManager} = this.props;
+		const { connectionManager } = this.props;
 		return <div className={css(styles.outer)}>
 			{this.renderIcon()}
 			<span>{connectionManager.statusText()}</span>
@@ -70,4 +70,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-module.exports = {ConnectionManagerView};
+module.exports = { ConnectionManagerView };

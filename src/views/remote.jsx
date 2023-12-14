@@ -1,7 +1,7 @@
 const debounce = require("debounce");
 
 const React = require("react");
-const {StyleSheet, css} = require("aphrodite");
+const { StyleSheet, css } = require("aphrodite");
 
 const FlatButton = require("material-ui/FlatButton").default;
 const IconButton = require("material-ui/IconButton").default;
@@ -9,9 +9,9 @@ const FAB = require("material-ui/FloatingActionButton").default;
 const Paper = require("material-ui/Paper").default;
 const Toggle = require("material-ui/Toggle").default;
 const Subheader = require("material-ui/Subheader").default;
-const {List, ListItem} = require("material-ui/List");
-const {Tab, Tabs} = require("material-ui/Tabs");
-const {Card, CardActions, CardHeader, CardText} = require("material-ui/Card");
+const { List, ListItem } = require("material-ui/List");
+const { Tab, Tabs } = require("material-ui/Tabs");
+const { Card, CardActions, CardHeader, CardText } = require("material-ui/Card");
 const IconMenu = require("material-ui/IconMenu").default;
 const MenuItem = require("material-ui/MenuItem").default;
 const TextField = require("material-ui/TextField").default;
@@ -25,10 +25,10 @@ const GamepadIcon = require("material-ui/svg-icons/hardware/gamepad.js").default
 const LabelIcon = require("material-ui/svg-icons/action/label.js").default;
 const LabelIconOutline = require("material-ui/svg-icons/action/label-outline.js").default;
 
-const {Remote} = require("../remote.js");
-const {Pulse} = require("../models.js");
+const { Remote } = require("../remote.js");
+const { Pulse } = require("../models.js");
 
-const {LabeledSlider, RobinCard, ConfirmDialog} = require("./shared.jsx");
+const { LabeledSlider, RobinCard, ConfirmDialog } = require("./shared.jsx");
 
 const RemoteView = React.createClass({
 	propTypes: {
@@ -36,10 +36,10 @@ const RemoteView = React.createClass({
 	},
 
 	render() {
-		const {remote} = this.props;
+		const { remote } = this.props;
 		return <div>
-			<PulseControl {...this.props}/>
-			{remote.device && <DeviceInfo {...this.props}/>}
+			<PulseControl {...this.props} />
+			{remote.device && <DeviceInfo {...this.props} />}
 			<FAB
 				onTouchTap={debounce(remote.triggerPulse.bind(remote), 1000)}
 				secondary
@@ -50,7 +50,7 @@ const RemoteView = React.createClass({
 					zIndex: 1,
 				}}
 			>
-				<PlayIcon/>
+				<PlayIcon />
 			</FAB>
 		</div>;
 	},
@@ -65,8 +65,8 @@ const DeviceInfo = React.createClass({
 	},
 
 	render() {
-		const {remote} = this.props;
-		const {confirmingRestart, confirmingReboot} = this.state;
+		const { remote } = this.props;
+		const { confirmingRestart, confirmingReboot } = this.state;
 		return <RobinCard>
 			<List>
 				<Subheader>Device information</Subheader>
@@ -145,9 +145,9 @@ const DeviceInfo = React.createClass({
 				<ListItem
 					primaryText="Restart the device server"
 					secondaryText={"You'll lose connection" +
-					 " for at least a few seconds."
+						" for at least a few seconds."
 					}
-					rightIcon={<RestartIcon/>}
+					rightIcon={<RestartIcon />}
 					onTouchTap={() => this.setState({
 						confirmingRestart: true,
 					})}
@@ -155,7 +155,7 @@ const DeviceInfo = React.createClass({
 				<ListItem
 					primaryText="Restart the device"
 					secondaryText="All bets are off"
-					rightIcon={<PowerIcon/>}
+					rightIcon={<PowerIcon />}
 					onTouchTap={() => this.setState({
 						confirmingReboot: true,
 					})}
@@ -166,18 +166,18 @@ const DeviceInfo = React.createClass({
 				text="This will take a few seconds."
 				open={confirmingRestart}
 				onConfirm={() => {
-					this.setState({confirmingRestart: false});
+					this.setState({ confirmingRestart: false });
 				}}
-				onCancel={() => this.setState({confirmingRestart: false})}
+				onCancel={() => this.setState({ confirmingRestart: false })}
 			/>
 			<ConfirmDialog
 				title="Really restart the device?"
 				text="This will probably be annoying."
 				open={confirmingReboot}
 				onConfirm={() => {
-					this.setState({confirmingReboot: false});
+					this.setState({ confirmingReboot: false });
 				}}
-				onCancel={() => this.setState({confirmingReboot: false})}
+				onCancel={() => this.setState({ confirmingReboot: false })}
 			/>
 		</RobinCard>;
 	},
@@ -193,19 +193,19 @@ const PulseControl = React.createClass({
 	},
 
 	handlePulseUpdate(updated) {
-		const {remote} = this.props;
+		const { remote } = this.props;
 		remote.updatePulse(remote.pulse.copy(updated));
 	},
 
 	handleToggleLabelField() {
-		const {remote} = this.props;
-		let {showLabelField, labelText} = this.state;
+		const { remote } = this.props;
+		let { showLabelField, labelText } = this.state;
 		remote.updateLabel(showLabelField ? "" : labelText);
-		this.setState({showLabelField: !showLabelField});
+		this.setState({ showLabelField: !showLabelField });
 	},
 
 	handleLabelFocus(e) {
-		this.setState({editingLabelText: this.state.labelText});
+		this.setState({ editingLabelText: this.state.labelText });
 	},
 
 	handleLabelChange(e) {
@@ -221,22 +221,22 @@ const PulseControl = React.createClass({
 	},
 
 	handleLabelBlur(e) {
-		const {remote} = this.props;
+		const { remote } = this.props;
 		const labelText = e.target.value;
 		remote.updateLabel(labelText);
-		this.setState({labelText, editingLabelText: null});
+		this.setState({ labelText, editingLabelText: null });
 	},
 
 	renderInner() {
-		const {remote} = this.props;
-		const {showLabelField, editingLabelText, labelText} = this.state;
+		const { remote } = this.props;
+		const { showLabelField, editingLabelText, labelText } = this.state;
 		const pulse = remote.pulse;
-		return <List style={{padding: 0}}>
+		return <List style={{ padding: 0 }}>
 			<ListItem disabled>
-				<LabeledSlider 
+				<LabeledSlider
 					name="duration"
 					getLabel={(n) => <span>Duration: {Math.round(n / 1000)}ms</span>}
-					onUpdate={(v) => this.handlePulseUpdate({usDuration: v})}
+					onUpdate={(v) => this.handlePulseUpdate({ usDuration: v })}
 					min={1e3}
 					max={2e4}
 					step={500}
@@ -244,16 +244,16 @@ const PulseControl = React.createClass({
 				/>
 			</ListItem>
 			{pulse.type !== Pulse.types.NOISE && <ListItem disabled>
-				<LabeledSlider 
+				<LabeledSlider
 					name="start-freq"
-					getLabel={(n) => 
+					getLabel={(n) =>
 						<span>{
 							pulse.type === Pulse.types.CHIRP ?
 								"Starting frequency" :
 								"Frequency"
 						}: {n}kHz</span>
 					}
-					onUpdate={(v) => this.handlePulseUpdate({khzStart: v})}
+					onUpdate={(v) => this.handlePulseUpdate({ khzStart: v })}
 					min={10}
 					max={90}
 					step={5}
@@ -261,12 +261,12 @@ const PulseControl = React.createClass({
 				/>
 			</ListItem>}
 			{pulse.type === Pulse.types.CHIRP && <ListItem disabled>
-				<LabeledSlider 
+				<LabeledSlider
 					name="end-freq"
-					getLabel={(n) => 
+					getLabel={(n) =>
 						<span>Ending frequency: {n}kHz</span>
 					}
-					onUpdate={(v) => this.handlePulseUpdate({khzEnd: v})}
+					onUpdate={(v) => this.handlePulseUpdate({ khzEnd: v })}
 					min={10}
 					max={90}
 					step={5}
@@ -274,9 +274,9 @@ const PulseControl = React.createClass({
 				/>
 			</ListItem>}
 			<ListItem disabled>
-				<LabeledSlider 
+				<LabeledSlider
 					name="record-duration"
-					getLabel={(n) => 
+					getLabel={(n) =>
 						<span>Recording duration: {n}ms</span>
 					}
 					onUpdate={(d) => remote.updateRecordDuration(d)}
@@ -291,7 +291,7 @@ const PulseControl = React.createClass({
 				secondaryText="Emit a square wave"
 				rightToggle={<Toggle
 					toggled={pulse.isSquare}
-					onToggle={(e, v) => this.handlePulseUpdate({isSquare: v})}
+					onToggle={(e, v) => this.handlePulseUpdate({ isSquare: v })}
 				/>}
 			/>}
 			{pulse.type === Pulse.types.CHIRP && <ListItem
@@ -299,7 +299,7 @@ const PulseControl = React.createClass({
 				secondaryText="Chirp with a logarithmic freqency sweep"
 				rightToggle={<Toggle
 					toggled={pulse.isLogarithmic}
-					onToggle={(e, v) => this.handlePulseUpdate({isLogarithmic: v})}
+					onToggle={(e, v) => this.handlePulseUpdate({ isLogarithmic: v })}
 				/>}
 			/>}
 			<ListItem
@@ -314,9 +314,9 @@ const PulseControl = React.createClass({
 					}
 				/>}
 			/>
-			{showLabelField && <ListItem style={{paddingTop: 0}}>
+			{showLabelField && <ListItem style={{ paddingTop: 0 }}>
 				<TextField
-					style={{padding: 0, margin: 0, width: "100%"}}
+					style={{ padding: 0, margin: 0, width: "100%" }}
 					hintText="Label for .wav files"
 					onFocus={this.handleLabelFocus}
 					onChange={this.handleLabelChange}
@@ -328,19 +328,19 @@ const PulseControl = React.createClass({
 	},
 
 	render() {
-		const {remote} = this.props;
-		const {showLabelField} = this.state;
+		const { remote } = this.props;
+		const { showLabelField } = this.state;
 		const pulse = remote.pulse;
 		return <RobinCard>
-			<Tabs 
+			<Tabs
 				value={pulse.type}
-				onChange={(v) => this.handlePulseUpdate({type: v})}
+				onChange={(v) => this.handlePulseUpdate({ type: v })}
 			>
-				<Tab value={Pulse.types.TONE} label="Tone"/>
-				<Tab value={Pulse.types.CHIRP} label="Chirp"/>
-				<Tab value={Pulse.types.NOISE} label="Noise"/>
+				<Tab value={Pulse.types.TONE} label="Tone" />
+				<Tab value={Pulse.types.CHIRP} label="Chirp" />
+				<Tab value={Pulse.types.NOISE} label="Noise" />
 			</Tabs>
-			<div 
+			<div
 				style={{
 					display: "flex",
 					justifyContent: "space-around",
@@ -349,17 +349,17 @@ const PulseControl = React.createClass({
 				<IconButton
 					disabled={remote.pulseHistory.atStart()}
 					onTouchTap={() => remote.pulseHistory.undo()}
-				><UndoIcon/>
+				><UndoIcon />
 				</IconButton>
-				<IconButton 
+				<IconButton
 					disabled={remote.pulseHistory.atEnd()}
 					onTouchTap={() => remote.pulseHistory.redo()}
 				>
-					<RedoIcon/>
+					<RedoIcon />
 				</IconButton>
 				<IconMenu
 					iconButtonElement={<IconButton>
-						<GamepadIcon/>
+						<GamepadIcon />
 					</IconButton>}
 				>
 					<Subheader>Assign this pulse to a button</Subheader>
@@ -375,12 +375,12 @@ const PulseControl = React.createClass({
 					)}
 				</IconMenu>
 				<IconButton onTouchTap={this.handleToggleLabelField}>
-					{showLabelField ? <LabelIcon/> : <LabelIconOutline/>}
+					{showLabelField ? <LabelIcon /> : <LabelIconOutline />}
 				</IconButton>
-			</div>	
+			</div>
 			{this.renderInner()}
 		</RobinCard>;
 	}
 });
 
-module.exports = {RemoteView, DeviceInfo, PulseControl};
+module.exports = { RemoteView, DeviceInfo, PulseControl };

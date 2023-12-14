@@ -1,5 +1,5 @@
 const React = require("react");
-const {StyleSheet, css} = require("aphrodite");
+const { StyleSheet, css } = require("aphrodite");
 
 const EchoIcon = require("material-ui/svg-icons/action/settings-remote.js").default;
 const LogsIcon = require("material-ui/svg-icons/action/assignment.js").default;
@@ -12,14 +12,14 @@ const {
 
 const Paper = require("material-ui/Paper").default;
 
-const {ConnectionManager} = require("../connection-manager.js");
-const {Remote} = require("../remote.js");
-const {Device, Pulse} = require("../models.js");
-const {RemoteStatus, DeviceStatus} = require("../protocol.js");
+const { ConnectionManager } = require("../connection-manager.js");
+const { Remote } = require("../remote.js");
+const { Device, Pulse } = require("../models.js");
+const { RemoteStatus, DeviceStatus } = require("../../protocol.js");
 
-const {ShrugView} = require("./shared.jsx");
-const {RemoteView} = require("./remote.jsx");
-const {ConnectionManagerView} = require("./connection-manager-view.jsx");
+const { ShrugView } = require("./shared.jsx");
+const { RemoteView } = require("./remote.jsx");
+const { ConnectionManagerView } = require("./connection-manager-view.jsx");
 
 const RobinApp = React.createClass({
 	propTypes: {
@@ -35,22 +35,22 @@ const RobinApp = React.createClass({
 	},
 
 	setActiveTab(activeTab) {
-		this.setState({activeTab});
+		this.setState({ activeTab });
 	},
 
 	renderActiveTab() {
-		const {activeTab} = this.state;
+		const { activeTab } = this.state;
 		if (activeTab === 0) {
-			return <RemoteView remote={this.props.remote}/>;
+			return <RemoteView remote={this.props.remote} />;
 		}
-		return <ShrugView/>;
+		return <ShrugView />;
 	},
 
 	render() {
-		const {connectionManager} = this.props;
-		const {activeTab} = this.state;
+		const { connectionManager } = this.props;
+		const { activeTab } = this.state;
 		if (connectionManager.deviceStatus === DeviceStatus.DISCONNECTED) {
-			return <ConnectionManagerView {...this.props}/>
+			return <ConnectionManagerView {...this.props} />
 		}
 		return <div className={css(styles.outer)}>
 			<div className={css(styles.content)}>
@@ -58,19 +58,19 @@ const RobinApp = React.createClass({
 			</div>
 			<Paper zDepth={1} className={css(styles.navigation)}>
 				<BottomNavigation selectedIndex={activeTab}>
-					<BottomNavigationItem 
+					<BottomNavigationItem
 						label="Remote"
-						icon={<EchoIcon/>}
+						icon={<EchoIcon />}
 						onTouchTap={() => this.setActiveTab(0)}
 					/>
-					<BottomNavigationItem 
+					<BottomNavigationItem
 						label="Logs"
-						icon={<LogsIcon/>}
+						icon={<LogsIcon />}
 						onTouchTap={() => this.setActiveTab(1)}
 					/>
-					<BottomNavigationItem 
+					<BottomNavigationItem
 						label="Library"
-						icon={<LibraryIcon/>}
+						icon={<LibraryIcon />}
 						onTouchTap={() => this.setActiveTab(2)}
 					/>
 				</BottomNavigation>
@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
 	navigation: {
 		alignSelf: "flex-end",
 		zIndex: 99999,
+		width: "100%",
 	},
 	outer: {
 		display: "flex",
@@ -101,4 +102,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-module.exports = {RobinApp};
+module.exports = { RobinApp };

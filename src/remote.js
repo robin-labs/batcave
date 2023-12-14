@@ -1,5 +1,5 @@
-const {Pulse, Device, Overrides} = require("./models.js");
-const {Message} = require("./protocol.js");
+const { Pulse, Device, Overrides } = require("./models.js");
+const { Message } = require("../protocol.js");
 
 const PHYSICAL_BUTTONS = {
 	JS_LEFT: "Joystick left",
@@ -31,9 +31,9 @@ class Remote {
 		);
 	}
 
-	handleDeviceStatus({status, info}) {
+	handleDeviceStatus({ status, info }) {
 		if (!info) return;
-		let {pulse, ...rest} = info;
+		let { pulse, ...rest } = info;
 		this.device = this.device.copy(rest);
 		if (pulse && !this.pulseSetByInfo) {
 			this.pulse = this.pulse.copy(pulse);
@@ -69,7 +69,7 @@ class Remote {
 	}
 
 	assignPulseToButton(button, pulse) {
-		this.backend.emit(Message.ASSIGN_PULSE, {button, pulse});
+		this.backend.emit(Message.ASSIGN_PULSE, { button, pulse });
 	}
 }
 
@@ -124,4 +124,4 @@ class PulseHistory {
 	}
 }
 
-module.exports = {Remote};
+module.exports = { Remote };

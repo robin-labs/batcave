@@ -1,32 +1,32 @@
 {
-  "name": "batcave",
+  "name": "rhcp",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js",
+    "build": "node esbuild.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/idreyn/batcave.git"
-  },
+  "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/idreyn/batcave/issues"
-  },
-  "homepage": "https://github.com/idreyn/batcave#readme",
   "dependencies": {
-    "audio-resampler": "^1.0.1",
-    "express": "^4.15.2",
-    "ip": "^1.1.5",
-    "socket.io": "^1.7.3",
-    "socket.io-client": "^1.7.3",
-    "socket.io-wildcard": "^0.1.1",
-    "socketio-wildcard": "^0.3.0"
+    "aphrodite": "^1.1.0",
+    "classnames": "^2.2.5",
+    "debounce": "^1.0.0",
+    "express": "^4.18.2",
+    "material-ui": "^0.17.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-tap-event-plugin": "^2.0.1",
+    "react-toolbox": "^2.0.0-beta.6",
+    "socket.io": "^4.7.2",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "babel-preset-latest": "^6.22.0",
-    "babel-preset-react": "^6.23.0"
+    "esbuild": "^0.19.9",
+    "ip": "^1.1.8",
+    "socket.io-client": "^4.7.2"
   }
 }

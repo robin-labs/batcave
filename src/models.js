@@ -75,7 +75,7 @@ class Pulse extends Model {
 	}
 }
 
-Pulse.getDefaultPulse = function() {
+Pulse.getDefaultPulse = function () {
 	return new Pulse({
 		usDuration: 5e3,
 		khzStart: 50,
@@ -95,7 +95,7 @@ class Overrides extends Model {
 		super();
 		this.enumerable({
 			wipersEnabled: false,
-			sWipersPeriod: 1, 
+			sWipersPeriod: 1,
 			forceEnableEmitters: false,
 			disableSave: false,
 			disablePlayback: false
@@ -103,4 +103,4 @@ class Overrides extends Model {
 	}
 }
 
-module.exports = {Device, Pulse, Overrides};
+module.exports = { Device, Pulse, Overrides };

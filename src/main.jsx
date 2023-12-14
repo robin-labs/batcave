@@ -1,29 +1,28 @@
 const React = require("react");
-const {render} = require("react-dom");
+const { render } = require("react-dom");
 
 const injectTapEventPlugin = require("react-tap-event-plugin");
 injectTapEventPlugin();
 
 const MuiThemeProvider = require("material-ui/styles/MuiThemeProvider").default;
 
-require("browserify-css");
 require("../css/style.css");
 
-const {Backend} = require("./backend.js");
-const {Remote} = require("./remote.js");
-const {ConnectionManager} = require("./connection-manager.js");
+const { Backend } = require("./backend.js");
+const { Remote } = require("./remote.js");
+const { ConnectionManager } = require("./connection-manager.js");
 
-const {RobinApp} = require("./views/app.jsx");
+const { RobinApp } = require("./views/app.jsx");
 
 var appRoot;
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     appRoot = document.getElementById("root");
     update();
 });
 
 function update() {
-	if (appRoot) render(<MuiThemeProvider>
-		<RobinApp remote={remote} connectionManager={connectionManager}/>
+    if (appRoot) render(<MuiThemeProvider>
+        <RobinApp remote={remote} connectionManager={connectionManager} />
     </MuiThemeProvider>, appRoot);
 }
 

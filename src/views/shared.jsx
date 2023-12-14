@@ -1,10 +1,10 @@
 const React = require("react");
-const {StyleSheet, css} = require("aphrodite");
+const { StyleSheet, css } = require("aphrodite");
 
 const Slider = require("material-ui/Slider").default;
 const Dialog = require("material-ui/Dialog").default;
 const FlatButton = require("material-ui/FlatButton").default;
-const {Card} = require("material-ui/Card");
+const { Card } = require("material-ui/Card");
 
 const LabeledSlider = React.createClass({
 	propTypes: {
@@ -23,7 +23,7 @@ const LabeledSlider = React.createClass({
 	},
 
 	handleDragStart(e) {
-		const {onDragStart} = this.props;
+		const { onDragStart } = this.props;
 		this.setState({
 			dragging: true,
 			dragValue: this.props.value,
@@ -32,23 +32,23 @@ const LabeledSlider = React.createClass({
 	},
 
 	handleDragStop(e) {
-		const {onDragStop, onUpdate} = this.props;
-		this.setState({dragging: false});
+		const { onDragStop, onUpdate } = this.props;
+		this.setState({ dragging: false });
 		onDragStop && onDragStop(e);
 		onUpdate && onUpdate(this.state.dragValue);
 	},
 
 	handleChange(e, value) {
 		if (this.state.dragging) {
-			this.setState({dragValue: value});
+			this.setState({ dragValue: value });
 		}
 	},
 
 	render() {
-		const {getLabel, value, onUpdate, ...rest} = this.props;
-		const {dragging, dragValue} = this.state;
+		const { getLabel, value, onUpdate, ...rest } = this.props;
+		const { dragging, dragValue } = this.state;
 		const currentValue = dragging ? dragValue : value;
-		return <div style={{margin: 0}}>
+		return <div style={{ margin: 0 }}>
 			<label>
 				<span>{getLabel(currentValue)}</span>
 				<Slider
@@ -56,7 +56,7 @@ const LabeledSlider = React.createClass({
 					onDragStart={this.handleDragStart}
 					onDragStop={this.handleDragStop}
 					onChange={this.handleChange}
-					sliderStyle={{margin: 0}}
+					sliderStyle={{ margin: 0 }}
 					value={currentValue}
 				/>
 			</label>
@@ -74,7 +74,7 @@ const ConfirmDialog = React.createClass({
 	},
 
 	render() {
-		const {title, text, onCancel, onConfirm, open} = this.props;
+		const { title, text, onCancel, onConfirm, open } = this.props;
 		return <Dialog
 			title={title}
 			modal={true}
@@ -98,7 +98,7 @@ const ConfirmDialog = React.createClass({
 
 const RobinCard = React.createClass({
 	render() {
-		return <Card style={{marginTop: 10}} {...this.props}/>;
+		return <Card style={{ marginTop: 10 }} {...this.props} />;
 	}
 });
 
@@ -113,7 +113,7 @@ const ShrugView = React.createClass({
 				height: "100%",
 			}}
 		>
-			<div style={{fontSize: 30}}>
+			<div style={{ fontSize: 30 }}>
 				{"¯\\_(ツ)_/¯"}
 			</div>
 			<div>Not implemented yet</div>
@@ -121,4 +121,4 @@ const ShrugView = React.createClass({
 	},
 });
 
-module.exports = {LabeledSlider, RobinCard, ConfirmDialog, ShrugView};
+module.exports = { LabeledSlider, RobinCard, ConfirmDialog, ShrugView };

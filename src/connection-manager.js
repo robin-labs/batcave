@@ -1,6 +1,4 @@
-const {RemoteStatus, DeviceStatus, Message} = require("./protocol.js");
-const resampler = require('audio-resampler');
-
+const { RemoteStatus, DeviceStatus, Message } = require("../protocol.js");
 
 class ConnectionManager {
 	constructor(update, backend) {
@@ -14,20 +12,20 @@ class ConnectionManager {
 		this.deviceStatus = DeviceStatus.DISCONNECTED;
 		if (backend.hasSocket) {
 			backend.on(
-				Message.DEVICE_LISTING, 
+				Message.DEVICE_LISTING,
 				this.onDeviceListing.bind(this)
 			);
 			backend.on(
 				Message.DEVICE_STATUS,
-				this.onDeviceStatus.bind(this),
-			),
+				this.onDeviceStatus.bind(this)
+			);
 			backend.on(
 				Message.DEVICE_CHOICE_INVALID,
 				(id) => console.warn(`${id} is an invalid device ID.`)
 			);
 			backend.on(
 				Message.DEVICE_CHOICE_SUCCESSFUL,
-				(id) => console.info(`${id} is was chosen successfully.`)
+				(id) => console.info(`${id} was chosen successfully.`)
 			);
 			backend.on(
 				Message.AUDIO,
@@ -39,7 +37,7 @@ class ConnectionManager {
 	}
 
 	statusText() {
-		return {		
+		return {
 			[RemoteStatus.DISCONNECTED]: "Waiting for a device..." +
 				this.deviceListing.length.toString() + " found so far.",
 			[RemoteStatus.NO_SOCKET]: "Socket unavailable." +
@@ -55,7 +53,7 @@ class ConnectionManager {
 		this.update();
 	}
 
-	onDeviceStatus({status, info}) {
+	onDeviceStatus(status) {
 		this.deviceStatus = status;
 		if (status === DeviceStatus.DISCONNECTED) {
 			this.remoteStatus = RemoteStatus.DISCONNECTED;
@@ -63,16 +61,9 @@ class ConnectionManager {
 		this.update();
 	}
 
-	onReceiveAudio({audio, pulse}) {
-		/*
-		resampler("data:audio/x-wav;base64," + audio, 9600, ({getFile}) => {
-			getFile((f) => {
-				var a = new Audio(f);
-				a.play();
-			});
-		});
-		*/
+	onReceiveAudio({ audio }) {
+		playWavAudio(audio);
 	}
 }
 
-module.exports = {ConnectionManager};
+module.exports = { ConnectionManager };

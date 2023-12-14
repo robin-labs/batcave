@@ -1,8 +1,8 @@
-const {HOST, PORT} = require("./config.js");
+const { HOST, PORT } = require("./config.js");
 const socket = require("socket.io-client")(`http://${HOST}:${PORT}`);
 const ip = require("ip");
 
-const {Message, DeviceStatus} = require("./frontend/js/protocol.js");
+const { Message, DeviceStatus } = require("./protocol.js");
 
 var pulse = null;
 var overrides = null;
@@ -52,7 +52,7 @@ socket.on(Message.UPDATE_OVERRIDES, (o) => {
 	overrides = o;
 });
 
-socket.on(Message.ASSIGN_PULSE, ({button, pulse}) => {
+socket.on(Message.ASSIGN_PULSE, ({ button, pulse }) => {
 	console.log("Assigning pulse", button, pulse);
 })
 
