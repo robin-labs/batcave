@@ -1,4 +1,5 @@
 const { RemoteStatus, DeviceStatus, Message } = require("../protocol.js");
+const { playWavAudio } = require("./audio.js");
 
 class ConnectionManager {
 	constructor(update, backend) {

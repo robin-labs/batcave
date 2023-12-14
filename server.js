@@ -6,7 +6,7 @@ const { HOST, PORT } = require("./config.js");
 
 const app = express();
 const http = app.listen(PORT, HOST);
-const io = new Server(http);
+const io = new Server(http, { maxHttpBufferSize: 10 * 1024 ** 1024 });
 app.use(express.static(__dirname));
 
 class Device {
@@ -35,9 +35,6 @@ io.on("connection", (socket) => {
 const createDeviceSocket = (socket, info) => {
 	const dev = new Device(socket, info);
 	devices.add(dev);
-
-	console.log("new device", dev.id);
-
 	socket.on(Message.DISCONNECT, (e) => {
 		devices.delete(dev);
 	});
@@ -59,7 +56,6 @@ const createRemoteSocket = (socket) => {
 
 	remote.socket.on(Message.CHOOSE_DEVICE, (idChoice) => {
 		const chosenDevice = Array.from(devices).filter(d => d.id === idChoice)[0];
-		console.log("chosen device", chosenDevice);
 		if (!chosenDevice) {
 			remote.socket.emit(Message.DEVICE_CHOICE_INVALID, idChoice);
 		} else {
